@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: ddl/01-schemas/shoping.sql
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/02-tables/auth/users.sql
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/02-tables/catalog/products.sql
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/02-tables/transactions/orders.sql
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/02-tables/transactions/payments.sql
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/03-relation/fk_payments_orders.sql
+      relativeToChangelogFile: true
