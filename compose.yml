@@ -35,5 +35,20 @@ services:
     command: update
     restart: "no"
 
+  api:
+    build: ./api
+    container_name: marketplace-api
+    restart: unless-stopped
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
+    env_file: .env
+    environment:
+      # Dentro de la red de Docker la base de datos se llama por el nombre del servicio
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    ports:
+      - "127.0.0.1:${API_PORT:-8080}:8080"
+
 volumes:
   postgres_data:

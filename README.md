@@ -64,7 +64,7 @@ La firma de integridad (`SHA-256(referencia + monto + moneda + secreto)`) se cal
 │       ├── 01-schemas/      esquemas por módulo
 │       ├── 02-tables/       tablas agrupadas por módulo
 │       └── 03-relation/     llaves foráneas e índices
-├── compose.yml              Postgres + Liquibase
+├── compose.yml              Postgres + Liquibase + API
 └── .env.example             plantilla de variables de entorno
 ```
 
@@ -97,7 +97,7 @@ Completa las llaves de Wompi con las de tu cuenta sandbox. Un único `.env` en l
 docker compose up -d
 ```
 
-Levanta Postgres (publicado solo en `127.0.0.1`) y ejecuta las migraciones de Liquibase. El contenedor de Liquibase termina después de aplicarlas. Para revisar el resultado:
+Levanta Postgres (publicado solo en `127.0.0.1`), ejecuta las migraciones de Liquibase y arranca la API. El contenedor de Liquibase termina después de aplicar las migraciones. Para revisar el resultado:
 
 ```bash
 docker compose logs liquibase
@@ -105,12 +105,20 @@ docker compose logs liquibase
 
 ### 3. API
 
+`docker compose up -d` también construye y levanta la API en `http://localhost:8080`, después de que Liquibase termina. Para reconstruirla tras cambios en el código:
+
+```bash
+docker compose up -d --build api
+```
+
+Para desarrollo sin contenedor (por ejemplo, para depurar desde el IDE), detén el servicio `api` y córrela con Maven:
+
 ```bash
 cd api
 ./mvnw spring-boot:run
 ```
 
-La API lee el `.env` de la raíz y valida al arrancar que las entidades coincidan con el esquema creado por Liquibase (`ddl-auto=validate`).
+En ambos casos la API lee el `.env` de la raíz y valida al arrancar que las entidades coincidan con el esquema creado por Liquibase (`ddl-auto=validate`). La imagen se construye sin ejecutar los tests, porque estos necesitan una base de datos.
 
 ## Convenciones de migraciones
 
